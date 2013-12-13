@@ -21,14 +21,14 @@ def usage(err = None):
     o = sys.stderr if err else sys.stdout
 
     o.write("Poor http - python web server\n")
-    
+
     if err:
         o.write(
             "Error:\n"
             "     %s\n\n" % err
         )
     #endif
-        
+
     o.write(
         "Usage: \n"
         "     poorhttp [options]\n\n"
@@ -47,9 +47,10 @@ def usage(err = None):
     if err:
         sys.exit(1)
 #enddef
-    
+
 def configure():
     env.cfg = ConfigParser()
+    env.cfg.optionxform = str
 
     # set default values
     env.cfg.add_section('http')                 # http section
@@ -154,12 +155,12 @@ def configure():
     #endfor
 
     env.environ['poor.Optimze'] = env.cfg.get('http', 'optimize')
-        
+
     if env.cfg.get('http', 'debug').lower() in ('true', 'yes', 'on', '1'):
         env.debug = True
     env.environ['poor.Debug'] = str(env.debug)
     env.environ['poor.Version'] = str(env.server_version)
-    
+
     # application environment
     for var in env.cfg.options('environ'):
         val = env.cfg.get('environ', var)
