@@ -94,12 +94,12 @@ class Application:
             self.get_crumbnav(environ),
             "<h2>Browser Headers</h2>",
             "<table>"
-        ] + [ "<tr><td>%s:</td><td>%s</td>" % \
+        ] + [ "<tr><td>%s:</td><td>%s</td></tr>" % \
                                 (key, val) for key, val in headers.items()
         ] + ["</table>",
             "<h2>Application Environment</h2>",
             "<table>"
-        ] + [ "<tr><td>%s:</td><td>%s</td>" % \
+        ] + [ "<tr><td>%s:</td><td>%s</td></tr>" % \
                                 (key, val) for key, val in environ.items()
         ] + ["</table>",
             "<hr>",
