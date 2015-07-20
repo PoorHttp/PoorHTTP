@@ -57,11 +57,11 @@ class WebRequestHandler(WSGIRequestHandler):
         )
         handler.request_handler = self      # backpointer for logging
         handler.run(self.server.get_app(), self)
-        
+
 #endclass
 
 class PoorServerHandler(ServerHandler):
-    
+
     server_software = "Poor Http (%s)" % os.name
 
     def add_poor_vars(self):
@@ -114,7 +114,7 @@ class Log:
         self.close = os.close
         self.errorlog = None
         self.accesslog = None
-        
+
         if cfg.has_option('http', 'debug'):
             env.debug = cfg.getboolean('http', 'debug')
 
@@ -148,7 +148,8 @@ class Log:
         if remote_host != '':
             remote_host = '[%s] ' % remote_host
         if self.errorlog:
-            os.write(self.errorlog, '%s: %s%s\n' % 
+            message = message[:-1] if message[-1] == '\n' else message
+            os.write(self.errorlog, '%s: %s%s\n' %
                     (strftime("%Y-%m-%d %H:%M:%S"),
                      remote_host,
                      message))

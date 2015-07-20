@@ -9,7 +9,7 @@
 server_class = None
 
 # poor http version
-server_version = 20120305
+server_version = 20150720
 
 # server address
 server_address = None
@@ -40,4 +40,4 @@ environ = {}
 
 __version__ = server_version
 __author__  = "Ondrej Tuma (McBig) <mcbig@zeropage.cz>"
-__date__    = "19 September 2013"
+__date__    = "20 July 2015"
