@@ -12,6 +12,9 @@ from poorhttp import env
 from poorhttp.tools import usage, configure, save_pid
 from poorhttp.classes import WebRequestHandler, PoorServerHandler
 
+stderr = sys.stderr
+stdout = sys.stdout
+
 def sigterm(sig, stack = None):
     env.log.error('[S] Shotdown server signal(%s)' % sig)
     os.unlink(pidfile)
@@ -23,14 +26,17 @@ try:
     pidfile = save_pid()
 
     signal(SIGTERM, sigterm)
-    
+
     env.server_address = cfg.get('http', 'address')
     env.server_port = cfg.getint('http', 'port')
     env.server_host = getfqdn(env.server_address)
-    
+
     env.log.error('[S] Starting server type %s at %s:%s' \
             % (env.server_class.type, env.server_address, env.server_port))
 
+    os.environ.update(env.environ)
+    sys.stderr = env.log
+    sys.stdout = env.log
     exec ("from %s import application" % env.environ['poor.Application']) in globals()
     httpd = make_server(env.server_address,
                         env.server_port,
@@ -70,6 +76,8 @@ except Exception, e:
     usage("Exception: %s" % traceback)
     sys.exit(1)
 finally:
+    sys.stderr = stderr
+    sys.stdout = stdout
     del(env.log)                                # close log files
     if os.geteuid() != os.getuid():             # pid file has real id owner
         os.setuid(os.getuid())
