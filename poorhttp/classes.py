@@ -144,6 +144,9 @@ class Log:
     def write(self, message):
         self.error(message)
 
+    def flush(self):
+        os.fsync(self.errorlog)
+
     def error(self, message, remote_host = ''):
         if remote_host != '':
             remote_host = '[%s] ' % remote_host
