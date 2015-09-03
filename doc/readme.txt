@@ -73,9 +73,9 @@ functionality then this simple example script.
 
 
     #!text
-    ~$ git clone git://git.code.sf.net/p/poorhttp/poorhttp poorhttp
+    ~$ git clone git@github.com:PoorHttp/PoorHTTP.git
     or
-    ~$ git clone http://git.code.sf.net/p/poorhttp/poorhttp poorhttp
+    ~$ git clone https://github.com/PoorHttp/PoorHTTP.git
 
 ==== Install from PyPI ====
 
