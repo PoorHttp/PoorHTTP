@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from distutils.core import setup
 from distutils.command.build_scripts import build_scripts
 from distutils.command.build import build
@@ -44,7 +42,7 @@ setup(
                            ('share/poorhttp/app', ['simple.py']),
                            ('share/doc/poorhttp/html', [
                                 'build/_html_/index.html',
-                                'build/_html_/license.html',
+                                'build/_html_/licence.html',
                                 'build/_html_/style.css'])
                         ],
     license             = "BSD",
