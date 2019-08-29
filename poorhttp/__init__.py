@@ -3,5 +3,7 @@
 
     This is support library for poorhttp daemon.
 """
-
-from env import __author__, __date__, __version__
+__name__ = "PoorHTTP"
+__version__ = "0.9.0"
+__author__ = "Ondrej Tuma (McBig) <mcbig@zeropage.cz>"
+__date__ = "2 Aug 2019"

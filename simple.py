@@ -3,20 +3,19 @@
 from wsgiref.headers import Headers
 from base64 import decodestring
 
-import os
 
 class Application:
     def __init__(self):
         self.routes = {
-            '/'             : self.root,
-            '/debug'        : self.debug,
-            '/favicon.ico'  : self.favicon,
+            '/': self.root,
+            '/debug': self.debug,
+            '/favicon.ico': self.favicon,
+            '/error': self.error
         }
 
-
     def __call__(self, environ, start_response):
-        method  = environ.get('REQUEST_METHOD')
-        uri     = environ.get('PATH_INFO')
+        method = environ.get('REQUEST_METHOD')
+        uri = environ.get('PATH_INFO')
 
         if method not in ('HEAD', 'GET', 'POST'):
             return self.method_not_allowed(environ, start_response)
@@ -26,15 +25,14 @@ class Application:
 
         return self.routes[uri](environ, start_response)
 
-    
     def get_headers(self, environ):
         tmp = []
         for key, val in environ.items():
             if key[:5] == 'HTTP_':
-                key = '-'.join(map(lambda x: x.capitalize() ,key[5:].split('_')))
+                key = '-'.join(map(lambda x: x.capitalize(),
+                                   key[5:].split('_')))
                 tmp.append((key, val))
         return Headers(tmp)
-
 
     def get_crumbnav(self, environ):
         navs = [environ.get('HTTP_HOST')]
@@ -46,12 +44,12 @@ class Application:
             navs.append('<b>%s</b>' % uri)
         return " &raquo; ".join(navs)
 
-    
     def root(self, environ, start_response):
         buff = [
             "<html>",
             "<head>",
-            '<meta http-equiv="content-type" content="text/html; charset=utf-8"/>',
+            '<meta http-equiv="content-type" content="text/html;'
+            ' charset=utf-8"/>',
             "<title>Simple WSGI Example Application</title>",
             "</head>",
             "<body>",
@@ -64,7 +62,8 @@ class Application:
             "</ul>",
             "<hr>",
             "<small>Copyright (c) 2013 Ondřej Tůma. See ",
-            '<a href="http://poorhttp.zeropage.cz">poorhttp.zeropage.cz</a></small>.',
+            '<a href="http://poorhttp.zeropage.cz">poorhttp.zeropage.cz</a>'
+            '</small>.',
             "</body>",
             "</html>"
         ]
@@ -72,15 +71,15 @@ class Application:
         response_headers = [('Content-type', 'text/html'),
                             ('X-Application', 'Simple')]
         start_response("200 OK", response_headers)
-        return [line + '\n' for line in buff]
-
+        return [line.encode('utf-8') + b'\n' for line in buff]
 
     def debug(self, environ, start_response):
         headers = self.get_headers(environ)
-        buff = [
+        buff = ([
             "<html>",
             "<head>",
-            '<meta http-equiv="content-type" content="text/html; charset=utf-8"/>',
+            '<meta http-equiv="content-type" content="text/html;'
+            ' charset=utf-8"/>',
             "<title>Debug Page</title>",
             "<style>",
             "table { width: 100%; font-family: monospace; }",
@@ -93,30 +92,29 @@ class Application:
             "<h1>Server/Application Debug Page</h1>",
             self.get_crumbnav(environ),
             "<h2>Browser Headers</h2>",
-            "<table>"
-        ] + [ "<tr><td>%s:</td><td>%s</td></tr>" % \
-                                (key, val) for key, val in headers.items()
-        ] + ["</table>",
+            "<table>"] +
+           ["<tr><td>%s:</td><td>%s</td></tr>" %
+            (key, val) for key, val in headers.items()] +
+           ["</table>",
             "<h2>Application Environment</h2>",
-            "<table>"
-        ] + [ "<tr><td>%s:</td><td>%s</td></tr>" % \
-                                (key, val) for key, val in environ.items()
-        ] + ["</table>",
+            "<table>"] +
+           ["<tr><td>%s:</td><td>%s</td></tr>" %
+            (key, val) for key, val in environ.items()] +
+           ["</table>",
             "<hr>",
             "<small>Copyright (c) 2013 Ondřej Tůma. See ",
-            '<a href="http://poorhttp.zeropage.cz">poorhttp.zeropage.cz</a></small>.',
+            '<a href="http://poorhttp.zeropage.cz">poorhttp.zeropage.cz</a>'
+            '</small>.',
             "</body>",
-            "</html>"
-        ]
+            "</html>"])
 
         response_headers = [('Content-type', 'text/html'),
                             ('X-Application', 'Simple')]
         start_response("200 OK", response_headers)
-        return [line + '\n' for line in buff]
-    
+        return [line.encode("utf-8") + b'\n' for line in buff]
 
     def favicon(self, environ, start_response):
-        icon = """
+        icon = b"""
 AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAD///8A////AP///wD///8AFRX/Bw8P/24ICP/IAgL/7wAA/+oAAP/GAAD/bQAA/wj///8A
 ////AP///wD///8A////AP///wD///8A////AB4e/4gYGP//ERH//wsL//8EBP//AAD/1QAA/6AA
@@ -142,18 +140,19 @@ AADwDwAA+B8AAA==
         response_headers = [('Content-type', 'image/vnd.microsoft.icon'),
                             ('X-Application', 'Simple')]
         start_response("200 OK", response_headers)
-        return  [decodestring(icon)]
+        return [decodestring(icon)]
 
     def method_not_allowed(self, environ, start_response):
         method = environ.get('REQUEST_METHOD')
 
         errors = environ.get('wsgi.errors')
-        errors.write("Method %s is not allowed for this request" % method)
-        
+        errors.write("Method %s is not allowed for this request\n" % method)
+
         buff = [
             "<html>",
             "<head>",
-            '<meta http-equiv="content-type" content="text/html; charset=utf-8"/>',
+            '<meta http-equiv="content-type" content="text/html;'
+            ' charset=utf-8"/>',
             "<title>405 - Method Not Allowed</title>",
             "</head>",
             "<body>",
@@ -162,7 +161,8 @@ AADwDwAA+B8AAA==
             "<p>Method %s is not allowed for this request</p>" % method,
             "<hr>",
             "<small>Copyright (c) 2013 Ondřej Tůma. See ",
-            '<a href="http://poorhttp.zeropage.cz">poorhttp.zeropage.cz</a></small>.',
+            '<a href="http://poorhttp.zeropage.cz">poorhttp.zeropage.cz</a>'
+            '</small>.',
             "</body>",
             "</html>"
         ]
@@ -170,19 +170,19 @@ AADwDwAA+B8AAA==
         response_headers = [('Content-type', 'text/html'),
                             ('X-Application', 'Simple')]
         start_response("405 Method Not Allowed", response_headers)
-        return [line + '\n' for line in buff]
-
+        return [line.encode('utf-8') + b'\n' for line in buff]
 
     def page_not_found(self, environ, start_response):
         uri = environ.get('PATH_INFO')
 
         errors = environ.get('wsgi.errors')
-        errors.write("Your request %s was not found." % uri)
-        
+        errors.write("Your request %s was not found.\n" % uri)
+
         buff = [
             "<html>",
             "<head>",
-            '<meta http-equiv="content-type" content="text/html; charset=utf-8"/>',
+            '<meta http-equiv="content-type" content="text/html;'
+            ' charset=utf-8"/>',
             "<title>404 - Page Not Found</title>",
             "</head>",
             "<body>",
@@ -191,7 +191,8 @@ AADwDwAA+B8AAA==
             "<p>Your request %s was not found.\n</p>" % uri,
             "<hr>",
             "<small>Copyright (c) 2013 Ondřej Tůma. See ",
-            '<a href="http://poorhttp.zeropage.cz">poorhttp.zeropage.cz</a></small>.',
+            '<a href="http://poorhttp.zeropage.cz">poorhttp.zeropage.cz</a>'
+            '</small>.',
             "</body>",
             "</html>"
         ]
@@ -199,7 +200,15 @@ AADwDwAA+B8AAA==
         response_headers = [('Content-type', 'text/html'),
                             ('X-Application', 'Simple')]
         start_response("405 Method Not Allowed", response_headers)
-        return [line + '\n' for line in buff]
+        return [line.encode('utf-8') + b'\n' for line in buff]
+
+    def error(self, environ, start_response):
+        raise RuntimeError("Exception error test")
 
 
 application = Application()
+
+if __name__ == '__main__':
+    from wsgiref.simple_server import make_server
+    httpd = make_server('127.0.0.1', 8000, application)
+    httpd.serve_forever()
