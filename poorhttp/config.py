@@ -96,8 +96,6 @@ class Config(Get):
         self.path = self.get_option(
             "python", "path", target=list, delimiter=':', fallback=["./"])
 
-        self.optimize = self.get_option("python", "optimize", target=int,
-                                        fallback=1)
         self.debug = self.get_option("python", "debug", target=bool,
                                      fallback=False)
 

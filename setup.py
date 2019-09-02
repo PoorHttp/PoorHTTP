@@ -9,14 +9,14 @@ from os import path, makedirs, walk
 from shutil import copyfile
 from subprocess import call
 
-from io import FileIO as file
+from poorhttp import __version__, __name__
 
 
-def find_data_files(directory, targetFolder=""):
+def find_data_files(directory, target_folder=""):
     rv = []
     for root, dirs, files in walk(directory):
-        if targetFolder:
-            rv.append((targetFolder,
+        if target_folder:
+            rv.append((target_folder,
                        list(root+'/'+f
                             for f in files if f[0] != '.' and f[-1] != '~')))
         else:
@@ -53,7 +53,7 @@ class build_doc(Command):
             out_name = in_name
         if call(['jinja24doc', '-v', '--var', 'public=%s' % self.public,
                  '_%s.html' % in_name, 'doc'],
-                stdout=file(self.html_temp + '/%s.html' % out_name, 'w')):
+                stdout=open(self.html_temp + '/%s.html' % out_name, 'w')):
             raise IOError(1, 'jinja24doc failed')
 
     def run(self):
@@ -125,7 +125,7 @@ class install_doc(install_data):
         if not self.skip_build:
             self.run_command('build_doc')
         self.data_files = find_data_files(self.html_temp,
-                                          'share/doc/poorwsgi/html')
+                                          'share/doc/poorhttp/html')
         install_data.run(self)
 
 
@@ -135,8 +135,8 @@ def doc():
 
 
 setup(
-    name="PoorHTTP",
-    version="20120305",
+    name=__name__,
+    version=__version__,
     description="Poor Http server for Python",
     author="Ondřej Tůma",
     author_email="mcbig@zeropage.cz",
@@ -144,19 +144,15 @@ setup(
     maintainer_email="mcbig@zeropage.cz",
     url="http://poorhttp.zeropage.cz/poorhttp",
     packages=['poorhttp'],
-    scripts=['build/_scripts_/poorhttp'],
     data_files=[('/etc/init.d', ['init.d/poorhttp']),
                 ('/etc', ['etc/poorhttp.ini']),
                 ('/var/run', []), ('/var/log', []),
-                ('share/poorhttp/app', ['simple.py']),
-                ('share/doc/poorhttp/html', [
-                    'build/_html_/index.html',
-                    'build/_html_/licence.html',
-                    'build/_html_/style.css'])],
+                ('share/poorhttp/example', ['simple.py']),
+                ('share/doc/poorhttp', ['README.rst'])],
     license="BSD",
     long_description=doc(),
     classifiers=[
-            "Development Status :: 4 - Beta",
+            "Development Status :: 5 - Production/Stable",
             "Environment :: No Input/Output (Daemon)",
             "Intended Audience :: Customer Service",
             "Intended Audience :: Developers",
@@ -173,5 +169,4 @@ setup(
             'poorhttp = poorhttp.main:main'
         ]
     }
-
 )

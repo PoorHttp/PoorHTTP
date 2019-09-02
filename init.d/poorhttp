@@ -5,8 +5,11 @@ pidfile=/var/run/poorhttp.pid
 config=/etc/poorhttp.ini
 
 python=python
+args=""
 
-grep -i -E '^debug(\s*)=(\s*)[1|true|yes]' $config > /dev/null || python="$python -O"
+grep -i -E '^debug(\s*)=(\s*)[1|true|yes]' $config > /dev/null && args="-d"
+grep -i -E '^optimize(\s*)=(\s*)[1|true|yes]' $config > /dev/null && args="$args -O"
+grep -i -E '^optimize(\s*)=(\s*)2' $config > /dev/null && args="$args -OO"
 
 case "$1" in
     start)
@@ -14,7 +17,7 @@ case "$1" in
             $0 stats
         else
             echo -n "Starting Poor Http server ... "
-            $python $poorhttp --pidfile=$pidfile --config=$config & > /dev/null
+            $python $args $poorhttp --pidfile=$pidfile --config=$config start > /dev/null
             sleep 1
             if [ -f $pidfile ]; then
                 echo "Ok"
@@ -27,10 +30,7 @@ case "$1" in
     stop)
         if [ -f $pidfile ]; then
             echo "Stoping Poor Http server ..."
-            (kill `cat $pidfile` 2>&1) > /dev/null
-            if [ "$?" = "1" ]; then
-                rm $pidfile
-            fi
+            $python $args $poorhttp --pidfile=$pidfile --config=$config stop > /dev/null
         else
             echo "Poor Http is shutdown"
         fi
