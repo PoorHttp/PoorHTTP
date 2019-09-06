@@ -1,0 +1,10 @@
+include *.py
+include MANIFEST.in
+include README.rst
+include ChangeLog
+include COPYING
+graft doc
+graft init.d
+graft etc
+global-exclude *~
+global-exclude *.swp

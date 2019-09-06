@@ -3,33 +3,39 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Poor HTTP homepage documentation">
+    <meta name="description" content="PoorHTTP homepage documentation">
     <meta name="keywords" content="wsgi http python server web hosting">
     <meta name="author" content="Ondřej Tůma McBig">
 
-    <title>Poor HTTP for Python</title>
+    <title>PoorHTTP for Python</title>
 
     <link href="style.css" rel="stylesheet">
+    <link href="web.css" rel="stylesheet">
 
   </head>
   <body>
     <div class="page">
 
       <div class="header">
-        <h1>Poor HTTP for Python</h1>
+        <img class="right" src="small-logo.png" alt="logo">
+        <h1>PoorHTTP for Python</h1>
         <small>HTTP / WSGI Server based on Python Simple Server.</small>
         <div class="pannel">
           <menu class="main">
-            <span class="item {{ 'selected' if page == 'poorhttp' }}"><a href="index.html" title="" >Documentation</a></span>
-            <span class="item {{ 'selected' if page == 'licence' }}"><a href="licence.html" title="">Licence</a></span>
-            <span class="item"><a href="https://github.com/PoorHttp/PoorHTTP">GitHub</a></span>
-            <span class="item"><a href="https://github.com/PoorHttp/PoorHTTP/issues">GitHub::Issues</a></span>
+            <span class="item {{ 'selected' if page == 'poorhttp' }}">
+                <a href="index.html" title="" >About</a></span>
+            <span class="item {{ 'selected' if page == 'changelog' }}">
+                <a href="changelog.html" title="">ChangeLog</a></span>
+            <span class="item {{ 'selected' if page == 'licence' }}">
+                <a href="licence.html" title="">Licence</a></span>
+            <span class="item">
+                <a href="https://github.com/PoorHttp/PoorHTTP">GitHub</a></span>
+            <span class="item">
+                <a href="https://pypi.python.org/pypi/PoorHTTP">PyPI</a></span>
+          {% if public is defined and public == '1' %}
+            <span class="item">
+                <a href="..">PoorHttp</a></span>
+          {% endif %}
           </menu>
-          <!--
-          <menu class="languages">
-            <span class="item selected"><a href="#" title="" >cz</a></span>
-            <span class="item"><a href="#" title="" >en</a></span>
-          </menu>
-          !-->
-        </div><!-- menu --!>
-      </div><!-- header --!>
+        </div>{# menu #}
+      </div>{# header #}

@@ -51,7 +51,7 @@ class Config(Get):
             "logging", "accesslog", fallback="/var/log/poorhttp-access.log")
         if args.debug:
             self.log_level = "DEBUG"
-        elif args.verbose:
+        elif args.info:
             self.log_level = "INFO"
         else:
             self.log_level = self.get_option(

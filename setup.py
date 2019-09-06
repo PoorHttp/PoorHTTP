@@ -12,6 +12,17 @@ from subprocess import call
 from poorhttp import __version__, __name__
 
 
+REQUIRES = []
+with open("requirements.txt", "r") as requires:
+    for line in requires:
+        REQUIRES.append(line.strip())
+
+
+def doc():
+    with open('README.rst', 'r') as readme:
+        return readme.read().strip()
+
+
 def find_data_files(directory, target_folder=""):
     rv = []
     for root, dirs, files in walk(directory):
@@ -66,6 +77,7 @@ class build_doc(Command):
         if not path.exists(self.html_temp):
             makedirs(self.html_temp)
         self.page('poorhttp', 'index')
+        self.page('changelog')
         self.page('licence')
         copyfile('doc/style.css', self.html_temp+'/style.css')
         copyfile('doc/web.css', self.html_temp+'/web.css')
@@ -129,15 +141,10 @@ class install_doc(install_data):
         install_data.run(self)
 
 
-def doc():
-    with open('README.rst', 'r') as readme:
-        return readme.read().strip()
-
-
 setup(
     name=__name__,
     version=__version__,
-    description="Poor Http server for Python",
+    description="Http/WSGI server for Python",
     author="Ondřej Tůma",
     author_email="mcbig@zeropage.cz",
     maintainer="Ondrej Tuma",
@@ -148,7 +155,8 @@ setup(
                 ('/etc', ['etc/poorhttp.ini']),
                 ('/var/run', []), ('/var/log', []),
                 ('share/poorhttp/example', ['simple.py']),
-                ('share/doc/poorhttp', ['README.rst'])],
+                ('share/doc/poorhttp', ['README.rst', 'ChangeLog', 'COPYING',
+                 'doc/about.rst'])],
     license="BSD",
     long_description=doc(),
     classifiers=[
@@ -161,6 +169,8 @@ setup(
             "Natural Language :: Czech",
             "Programming Language :: Python :: 3 :: Only",
             "Topic :: Internet :: WWW/HTTP :: WSGI :: Server"],
+    python_requires=">=3",
+    install_requires=REQUIRES,
     cmdclass={'build_doc': build_doc,
               'clean_doc': clean_doc,
               'install_doc': install_doc},

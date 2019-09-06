@@ -10,7 +10,7 @@ from os import geteuid, kill
 from daemon import DaemonContext
 from lockfile.pidlockfile import PIDLockFile
 
-from . import __name__
+from . import __name__, __version__
 from . config import Config
 from . daemon import Daemon
 
@@ -21,8 +21,8 @@ log = getLogger(__name__)
 def main():
     """Standard main function."""
     parser = ArgumentParser(
-        description=__doc__,
-        usage="$(prog)s [options] command"
+        description="HTTP/WSGI server for Python",
+        usage="poorhttp [options] command"
     )
     parser.add_argument(
         "command", nargs='?', default="start", type=str,
@@ -36,27 +36,30 @@ def main():
         help="Run as script on foreground")
     parser.add_argument(
         "-c", "--config", type=str,
-        help="Path to config file.", metavar="<file>")
+        help="Path to config file.", metavar="<FILE>")
     parser.add_argument(
         "-p", "--pidfile", type=str,
-        help="Path to pid file", metavar="<file>")
+        help="Path to pid file", metavar="<FILE>")
     parser.add_argument(
         "-a", "--address", type=str,
-        help="listening address", metavar="<ip>")
+        help="IP listening address (host or IP)", metavar="<ADDRESS>")
     parser.add_argument(
         "-b", "--port", type=str,
-        help="listening port", metavar="<port>")
+        help="TCP/IP listening port", metavar="<PORT>")
     parser.add_argument(
         "-w", "--wsgi", type=str,
-        help="wsgi application (python module or file)", metavar="<module>")
+        help="wsgi application (Python module or file)", metavar="<MODULE>")
     parser.add_argument(
-        "-vv", "--verbose", action="store_true",
+        "-i", "--info", action="store_true",
         help="More verbose logging level INFO is set.")
     parser.add_argument(
-        "-vvv", "--debug", action="store_true",
+        "-d", "--debug", action="store_true",
         help="DEBUG logging level is set.")
 
     args = parser.parse_args()
+    if args.version:
+        print("%s %s version." % (__name__, __version__))
+        return 0
 
     try:
         config = Config(args)

@@ -4,7 +4,7 @@ poorhttp=/usr/bin/poorhttp
 pidfile=/var/run/poorhttp.pid
 config=/etc/poorhttp.ini
 
-python=python
+python=python3
 args=""
 
 grep -i -E '^debug(\s*)=(\s*)[1|true|yes]' $config > /dev/null && args="-d"

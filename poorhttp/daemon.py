@@ -42,7 +42,7 @@ class Daemon():
         for path in reversed(self.cfg.path):
             sys.path.insert(0, abspath(path))
 
-    def chown_logs(self):
+    def set_chown(self):
         fchown(self.error_log.fileno(), self.uid, self.gid)
         fchown(self.access_log.fileno(), self.uid, self.gid)
 
